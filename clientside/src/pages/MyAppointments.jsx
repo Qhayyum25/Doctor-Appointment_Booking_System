@@ -1,6 +1,10 @@
+// 
+
+
+
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
-import MockPayment from "../components/MockPayment"; // ✅ FIXED PATH
+import MockPayment from "../components/MockPayment";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -39,6 +43,7 @@ const MyAppointments = () => {
 
       if (data.success) {
         setAppointments(data.appointments.reverse());
+        console.log(data.appointments);
       }
     } catch (error) {
       console.log(error);
@@ -107,6 +112,14 @@ const MyAppointments = () => {
             </div>
             <div></div>
             <div className="flex flex-col gap-2 justify-end">
+              {/* ✅ PAYMENT SUCCESSFUL - SHOW CONFIRMATION */}
+              {!item.cancelled && item.isCompleted && (
+                <button className="sm:min-w-48 py-2 border border-green-500 rounded text-green-500 font-semibold">
+                  ✓ Payment Successful
+                </button>
+              )}
+
+              {/* UNPAID APPOINTMENT - SHOW PAY BUTTON */}
               {!item.cancelled && !item.isCompleted && (
                 <MockPayment
                   amount={item.docData.fees}
@@ -114,12 +127,14 @@ const MyAppointments = () => {
                   userId={item.userId}
                   docId={item.docId}
                   onSuccess={() => {
-                    toast.success('Payment successful!');
+                    toast.success("Payment successful! Appointment confirmed.");
                     getUserAppointments();
                     getDoctorsData();
                   }}
                 />
               )}
+
+              {/* CANCEL BUTTON - AVAILABLE BEFORE APPOINTMENT */}
               {!item.cancelled && !item.isCompleted && (
                 <button
                   onClick={() => cancelAppointment(item._id)}
@@ -128,14 +143,11 @@ const MyAppointments = () => {
                   Cancel appointment
                 </button>
               )}
-              {item.cancelled && !item.isCompleted && (
-                <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">
-                  Appointment cancelled
-                </button>
-              )}
-              {item.isCompleted && (
-                <button className="sm:min-w-48 py-2 border border-green-500 rounded text-green-500">
-                  Completed
+
+              {/* CANCELLED APPOINTMENT */}
+              {item.cancelled && (
+                <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500 font-semibold">
+                  ✗ Appointment Cancelled
                 </button>
               )}
             </div>
