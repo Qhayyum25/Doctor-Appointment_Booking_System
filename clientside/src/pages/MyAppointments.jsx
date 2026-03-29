@@ -148,7 +148,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
-import MockPayment from "./MockPayment"; // ADD THIS
+import MockPayment from "../components/MockPayment";  // ADD THIS
 import axios from "axios";
 import { toast } from "react-toastify";
 
